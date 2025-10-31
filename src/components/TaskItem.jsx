@@ -4,6 +4,7 @@ export function TaskItem({ task, onToggle, onDelete }) {
   return (
     <li className={`task-item${task.completed ? ' task-item--completed' : ''}`}>
       <label className="task-item__label">
+        {/* チェック状態に応じて完了フラグを切り替えるチェックボックス */}
         <input
           type="checkbox"
           checked={task.completed}
@@ -11,14 +12,17 @@ export function TaskItem({ task, onToggle, onDelete }) {
           className="task-item__checkbox"
         />
         <div className="task-item__content">
+          {/* タスクの内容テキスト */}
           <span className="task-item__text">{task.text}</span>
           <span className="task-item__datetime">
+            {/* 締め切り日時が設定されていれば整形して表示する */}
             {task.dueDate || task.dueTime
               ? `${formatDateForDisplay(task.dueDate)} ${formatTimeForDisplay(task.dueTime)}`.trim()
               : '日時未設定'}
           </span>
         </div>
       </label>
+      {/* タスクを削除するボタン */}
       <button type="button" className="task-item__delete" onClick={() => onDelete(task.id)}>
         削除
       </button>
