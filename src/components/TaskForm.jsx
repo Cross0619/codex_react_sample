@@ -1,12 +1,15 @@
 export function TaskForm({ defaultDate, defaultTime, onSubmit }) {
   function handleSubmit(event) {
     event.preventDefault();
+    // フォームから値を取り出し、余計な空白を除去する
     const formData = new FormData(event.target);
     const text = (formData.get('task') ?? '').trim();
     const date = formData.get('date');
     const time = formData.get('time');
+    // 入力が揃っていない場合は何もしない
     if (!text || !date || !time) return;
 
+    // 親コンポーネントに入力内容を渡してタスクを追加してもらう
     onSubmit({ text, date, time });
     event.target.reset();
   }
