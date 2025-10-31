@@ -1,6 +1,6 @@
 import { formatDateForDisplay, formatTimeForDisplay } from '../utils/dateTime';
 
-export function TaskItem({ task, onToggle, onDelete }) {
+export function TaskItem({ task, onToggle, onDelete, onEdit }) {
   return (
     <li className={`task-item${task.completed ? ' task-item--completed' : ''}`}>
       <label className="task-item__label">
@@ -22,10 +22,16 @@ export function TaskItem({ task, onToggle, onDelete }) {
           </span>
         </div>
       </label>
-      {/* タスクを削除するボタン */}
-      <button type="button" className="task-item__delete" onClick={() => onDelete(task.id)}>
-        削除
-      </button>
+      <div className="task-item__actions">
+        {/* タスクを編集するボタン */}
+        <button type="button" className="task-item__edit" onClick={() => onEdit?.(task.id)}>
+          編集
+        </button>
+        {/* タスクを削除するボタン */}
+        <button type="button" className="task-item__delete" onClick={() => onDelete(task.id)}>
+          削除
+        </button>
+      </div>
     </li>
   );
 }
