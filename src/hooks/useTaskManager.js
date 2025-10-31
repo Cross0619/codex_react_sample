@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getDueTimestamp } from '../utils/dateTime';
 import { FILTERS, SORT_ORDERS, STORAGE_KEY, createTask, normalizeTask } from '../utils/task';
 
 export function useTaskManager() {
@@ -74,6 +75,30 @@ export function useTaskManager() {
     setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)));
   }, []);
 
+  // 既存タスクの内容を更新する
+  const updateTask = useCallback((id, { text, date, time }) => {
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.id !== id) {
+          return task;
+        }
+
+        const trimmedText = text.trim();
+        const dueDate = date;
+        const dueTime = time;
+        const dueAt = getDueTimestamp(dueDate, dueTime) ?? task.dueAt;
+
+        return {
+          ...task,
+          text: trimmedText,
+          dueDate,
+          dueTime,
+          dueAt,
+        };
+      }),
+    );
+  }, []);
+
   // 指定IDのタスクを一覧から取り除く
   const deleteTask = useCallback((id) => {
     setTasks((prev) => prev.filter((task) => task.id !== id));
@@ -100,6 +125,7 @@ export function useTaskManager() {
     setSortOrder,
     addTask,
     toggleTask,
+    updateTask,
     deleteTask,
     clearCompleted,
   };

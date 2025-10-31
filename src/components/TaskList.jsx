@@ -1,6 +1,6 @@
 import { TaskItem } from './TaskItem';
 
-export function TaskList({ tasks, onToggleTask, onDeleteTask }) {
+export function TaskList({ tasks, onToggleTask, onDeleteTask, onEditTask }) {
   return (
     <ul className="task-list" aria-live="polite">
       {tasks.length === 0 ? (
@@ -9,7 +9,13 @@ export function TaskList({ tasks, onToggleTask, onDeleteTask }) {
       ) : (
         /* タスクごとにTaskItemコンポーネントを生成する */
         tasks.map((task) => (
-          <TaskItem key={task.id} task={task} onToggle={onToggleTask} onDelete={onDeleteTask} />
+          <TaskItem
+            key={task.id}
+            task={task}
+            onToggle={onToggleTask}
+            onDelete={onDeleteTask}
+            onEdit={onEditTask}
+          />
         ))
       )}
     </ul>

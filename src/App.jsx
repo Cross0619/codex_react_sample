@@ -1,4 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
+import { TaskEditModal } from './components/TaskEditModal';
 import { TaskForm } from './components/TaskForm';
 import { TaskFilters } from './components/TaskFilters';
 import { SortControls } from './components/SortControls';
@@ -11,6 +13,7 @@ function App() {
   const {
     FILTERS,
     SORT_ORDERS,
+    tasks,
     filteredTasks,
     filterKey,
     keyword,
@@ -23,9 +26,36 @@ function App() {
     setSortOrder,
     addTask,
     toggleTask,
+    updateTask,
     deleteTask,
     clearCompleted,
   } = useTaskManager();
+
+  const [editingTaskId, setEditingTaskId] = useState(null);
+
+  const editingTask = useMemo(() => tasks.find((task) => task.id === editingTaskId) ?? null, [tasks, editingTaskId]);
+
+  useEffect(() => {
+    if (!editingTaskId) return;
+    const exists = tasks.some((task) => task.id === editingTaskId);
+    if (!exists) {
+      setEditingTaskId(null);
+    }
+  }, [editingTaskId, tasks]);
+
+  const handleStartEdit = (id) => {
+    setEditingTaskId(id);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingTaskId(null);
+  };
+
+  const handleSubmitEdit = ({ text, date, time }) => {
+    if (!editingTaskId) return;
+    updateTask(editingTaskId, { text, date, time });
+    setEditingTaskId(null);
+  };
 
   return (
     <div className="app">
@@ -54,8 +84,15 @@ function App() {
         <TaskSummary activeCount={activeCount} onClearCompleted={clearCompleted} />
 
         {/* 条件に一致したタスクをリスト表示する */}
-        <TaskList tasks={filteredTasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
+        <TaskList
+          tasks={filteredTasks}
+          onToggleTask={toggleTask}
+          onDeleteTask={deleteTask}
+          onEditTask={handleStartEdit}
+        />
       </section>
+
+      <TaskEditModal task={editingTask} onClose={handleCloseEdit} onSubmit={handleSubmitEdit} />
     </div>
   );
 }
